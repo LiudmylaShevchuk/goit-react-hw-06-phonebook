@@ -1,5 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/contactsSlice';
 import { Formik } from 'formik';
 import { object, string} from 'yup';
 import { nanoid } from 'nanoid';
@@ -32,21 +34,29 @@ const initialValues = {
     number: '',
 };
 
-export const ContactForm = ({ onSubmit }) => {
-    const handleSubmit = (values, { resetForm }) => {
-        const newContact = {
-            id: 'id-' + nanoid(),
-            name: values.name,
-            number: values.number,
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+    const contacts = useSelector(getContacts);
+    
+    const onSubmit = (values, { resetForm }) => {
+    const newContact = {
+      id: 'id-' + nanoid(),
+      name: values.name,
+      number: values.number,
         };
+        
+    if (contacts.find(contact => contact.name === newContact.name)) {
+      alert(`${newContact.name} is already in contacts`);
+    }
 
-        onSubmit(newContact);
-        resetForm();
+        
+    dispatch(addContact(newContact));
+    resetForm();
     };
-
+    
     return (
         <>
-            <Formik initialValues={initialValues} onSubmit={handleSubmit} validationSchema={schema}>
+            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={schema}>
                 <Container>
                     <Wrapper>
                         <Label htmlFor="name">Name:</Label>
@@ -65,4 +75,3 @@ export const ContactForm = ({ onSubmit }) => {
     );
 };
 
-ContactForm.propTypes = {onSubmit:PropTypes.func.isRequired};

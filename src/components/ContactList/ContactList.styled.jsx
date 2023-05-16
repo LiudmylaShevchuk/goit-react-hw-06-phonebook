@@ -9,7 +9,7 @@ export const Contacts = styled.ul`
   gap: 15px;`
     ;
 
-export const ContactItem = styled.li`
+export const ContactsItem = styled.li`
 padding: 10px;
   display: flex;
   align-items: center;
